@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -8,37 +9,119 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #000000;
+    background-color: #3a2a00db;
 }
 
 .main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #1c1c1cbb;
-    outline: 1px solid #919191;
-    width: 45%;
-    height: 95vh;
+    background-color: #1a1a1a;
+    outline: 1px outset #919191;
+    width: 600px;
+    height: 760px;
     border-radius: 3vh;
+    box-shadow: 0 6px 0px 3px #161616;
 }
 
 .name-container {
     display: flex;
     align-items: center;
-    width: 95%;
-    height: 10vh;
+    width: 570px;
+    height: 80px;
 }
 
 h1 {
-    color: #5f5f5f60;
-    font-size: 25px;
+    font-size: 22px;
+}
+
+.green {
+    color: #00ff0d6b;
+}
+
+.white {
+    color: #ffffffbe;
+}
+
+.red {
+    color: #ff00006b;
 }
 
 .display-container {
-    background-color: #36cad247;
-    box-shadow: 0px 0px 45px 3px #6fffff42;
-    outline: 4px solid #02111225;
-    height: 15vh;
-    width: 95%;
+    background-color: #ddeedd60;
+    box-shadow: 0px 0px 30px 1px #d8fada6e;
+    outline: 4px solid #14191420;
+    height: 110px;
+    width: 570px;
     border-radius: 1.5vh;
 }
+
+.button-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;
+    width: 600px;
+    height: 510px;
+}
+
+button {
+    background-color: #00000064;
+    color: #ffffff;
+    outline: 1px outset #919191;
+    border-radius: 1.5vh;
+    border: none;
+    margin: 6px 6px;
+    height: 70px;
+    width: 133px;
+    font-size: 40px;
+    box-shadow: 0 6px 0 4px #000000; 
+    text-shadow: 0px 0px 3px #ffffff24;
+    transition: all 0.1s ease;
+}
+
+.equals {
+    width: 278px;
+    color: #000000;
+    background-color: #ff000043;
+}
+
+.num {
+    color: #000000;
+    background-color: #00ff0d43;
+}
+
+.power {
+    color: #7f0000;
+}
+
+button:hover {
+    opacity: 0.9;
+    transform: scale(1.05);
+    outline: 1px outset #7f0000;
+    box-shadow: 0 6.5px 0 1.5px #000000; 
+    border-radius: 1.6vh;
+}
+
+.equals:hover {
+    outline: 1px outset #ffffff;
+    color: #ffffff;
+}
+
+.num:hover {
+    outline: 1px outset #ffffff;
+    color: #ffffff;
+}
+
+.power:hover {
+    color: #ffffff;
+    background-color: #ff000043;
+    outline: 1px outset #ffffff;
+}
+
+button:active {
+    transform: translateY(6px);
+    box-shadow: 0 1px 0 3px #000000;
+    text-shadow: 0px 0px 6px #ffffff;
+}
+
