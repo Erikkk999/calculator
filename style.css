@@ -48,12 +48,22 @@ h1 {
 }
 
 .display-container {
-    background-color: #ddeedd60;
-    box-shadow: 0px 0px 30px 1px #d8fada6e;
-    outline: 4px solid #14191420;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #86e5f06a;
+    box-shadow: 0px 0px 30px 1px #86e5f06a;
+    outline: 4px solid #14191820;
     height: 110px;
     width: 570px;
     border-radius: 1.5vh;
+}
+
+.upper-text {
+    font-size: 35px;
+    color: #0000007a;
+    text-shadow: 0px 0px 5px #002729d2;
 }
 
 .button-container {
@@ -82,12 +92,12 @@ button {
 
 .equals {
     width: 278px;
-    color: #000000;
+    color: #1a1919;
     background-color: #ff000043;
 }
 
 .num {
-    color: #000000;
+    color: #191a19;
     background-color: #00ff0d43;
 }
 
@@ -113,15 +123,49 @@ button:hover {
     color: #ffffff;
 }
 
-.power:hover {
-    color: #ffffff;
-    background-color: #ff000043;
-    outline: 1px outset #ffffff;
-}
-
 button:active {
     transform: translateY(6px);
     box-shadow: 0 1px 0 3px #000000;
     text-shadow: 0px 0px 6px #ffffff;
+}
+
+.power:active {
+    text-shadow: 0px 0px 6px #760000d5;
+}
+
+.off-state .display-container {
+    background-color: #3b55533a;
+    box-shadow: none;
+    outline: 4px solid #0c0c0c46;
+}
+
+.off-state button {
+    pointer-events: none;
+    transition: all 0.7s ease;
+    text-shadow: none;
+    color: #575757d8;
+    transform: translateY(6px);
+    box-shadow: 0 1px 0 3px #000000;
+}
+
+.off-state .power {
+    pointer-events: auto;
+    color: #ff000043;
+    text-shadow: none;
+}
+
+
+.off-state .equals {
+    color: #000000;
+}
+
+.off-state .num {
+    color: #000000;
+}
+
+.off-state .power:hover {
+    transition: all 0.1s ease;
+    outline: 1px outset #7f0000;
+    transform: translateY(6px) scale(1.02);
 }
 
