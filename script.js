@@ -1,16 +1,19 @@
 const mainContainer = document.querySelector(".main-container");
+const welcomeDisp = document.querySelector(".upper-display");
 const buttons = document.querySelector(".button-container");
-const upperText = document.querySelector(".upper-text");
+const upperTxt = document.querySelector(".upper-text");
+const lowerTxt = document.querySelector(".lower-text");
 
 let isPowerOn = false;
 let powerMessageTimeout;
 
 buttons.addEventListener("click", (e) => {
-        const button = e.target;
-        if (button.classList.contains("power")) {
+    const button = e.target;
+    if (!button.classList.contains("button")) return;
+    if (button.classList.contains("power")) {
         togglePower(button);
-        }
-    });
+    }
+});
 
 function togglePower(btn) {
     isPowerOn = !isPowerOn;
@@ -19,20 +22,24 @@ function togglePower(btn) {
 
     if (isPowerOn) {
         mainContainer.classList.remove("off-state");
+        welcomeDisp.classList.add("welcome");
+        upperTxt.textContent = "Buongiorno!";
         btn.textContent = "OFF";
-        upperText.textContent = "Buongiorno!";
 
         powerMessageTimeout = setTimeout(() => {
-            upperText.textContent = "";
-        }, 3000);
+            upperTxt.textContent = "";
+            welcomeDisp.classList.remove("welcome");
+        }, 2000);
 
     } else {
-        upperText.textContent = "Arrivederci!";
+        welcomeDisp.classList.add("welcome");
+        upperTxt.textContent = "Arrivederci!";
 
         powerMessageTimeout = setTimeout(() => {
-            upperText.textContent = "";
-            btn.textContent = "ON";
+            upperTxt.textContent = "";
+            welcomeDisp.classList.remove("welcome");
             mainContainer.classList.add("off-state");
-        }, 2000);
+            btn.textContent = "ON";
+        }, 3000);
     }
 }

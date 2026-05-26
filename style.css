@@ -60,10 +60,23 @@ h1 {
     border-radius: 1.5vh;
 }
 
-.upper-text {
-    font-size: 35px;
+.upper-display,
+.lower-display {
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    width: 540px;
+}
+
+.upper-text,
+.lower-text {
+    font-size: 48px;
     color: #0000007a;
     text-shadow: 0px 0px 5px #002729d2;
+}
+
+.welcome {
+    justify-content: center;
 }
 
 .button-container {
@@ -76,6 +89,7 @@ h1 {
 }
 
 button {
+    cursor: pointer;
     background-color: #00000064;
     color: #ffffff;
     outline: 1px outset #919191;
@@ -152,8 +166,24 @@ button:active {
     pointer-events: auto;
     color: #ff000043;
     text-shadow: none;
+    box-shadow: none;
+    animation: pulse 3s infinite;
 }
 
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 #ff000066;
+        outline: 1px outset #919191;
+    }
+    40% {
+        box-shadow: 0 0 0 10px #ff000000;
+        outline: 1px outset #7f0000;
+    }
+    100% {
+        box-shadow: 0 0 0 0 #ff000000;
+        outline: 1px outset #919191;
+    }
+}
 
 .off-state .equals {
     color: #000000;
@@ -165,7 +195,7 @@ button:active {
 
 .off-state .power:hover {
     transition: all 0.1s ease;
-    outline: 1px outset #7f0000;
+    outline: 1px outset #919191;
     transform: translateY(6px) scale(1.02);
 }
 
