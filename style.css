@@ -1,7 +1,18 @@
+:root {
+    --main-green:#00ff0d6b;
+    --main-white: #ffffff;
+    --main-red: #ff00006b;
+    --on-hover-red: #ff0000b7;
+    --off-state-red: #ff000043;
+    --title-green: #25ff30b4;
+    --title-white: #ffffffde;
+    --title-red: #ff0000b4;
+}
+
 * {
     margin: 0;
     padding: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
 body {
@@ -9,7 +20,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #3a2a00db;
+    background-image: url("images/favicon.jpeg");
+    background-size: 100% 100%;
 }
 
 .main-container {
@@ -20,7 +32,7 @@ body {
     outline: 1px outset #919191;
     width: 600px;
     height: 760px;
-    border-radius: 3vh;
+    border-radius: 30px;
     box-shadow: 0 6px 0px 3px #161616;
 }
 
@@ -32,19 +44,20 @@ body {
 }
 
 h1 {
-    font-size: 22px;
+    font-style: italic;
+    font-size: 25px;
 }
 
 .green {
-    color: #00ff0d6b;
+    color: var(--title-green);
 }
 
 .white {
-    color: #ffffffbe;
+    color: var(--title-white);
 }
 
 .red {
-    color: #ff00006b;
+    color: var(--title-red);
 }
 
 .display-container {
@@ -57,7 +70,7 @@ h1 {
     outline: 4px solid #14191820;
     height: 110px;
     width: 570px;
-    border-radius: 1.5vh;
+    border-radius: 10px;
 }
 
 .upper-display,
@@ -66,17 +79,23 @@ h1 {
     align-items: center;
     justify-content: right;
     width: 540px;
+    overflow: auto;
 }
 
 .upper-text,
 .lower-text {
-    font-size: 48px;
+    font-size: 45px;
     color: #0000007a;
     text-shadow: 0px 0px 5px #002729d2;
 }
 
 .welcome {
     justify-content: center;
+}
+
+.welcome .upper-text {
+    font-size: 60px;
+    font-family: cursive;
 }
 
 .button-container {
@@ -90,112 +109,102 @@ h1 {
 
 button {
     cursor: pointer;
-    background-color: #00000064;
-    color: #ffffff;
-    outline: 1px outset #919191;
-    border-radius: 1.5vh;
+    background-color: #00000048;
+    color: var(--main-white);
+    outline: 1px outset #ffffff80;
+    border-radius: 10px;
     border: none;
     margin: 6px 6px;
     height: 70px;
     width: 133px;
     font-size: 40px;
-    box-shadow: 0 6px 0 4px #000000; 
-    text-shadow: 0px 0px 3px #ffffff24;
-    transition: all 0.1s ease;
+    box-shadow: 0 6px 0 1px #000000;
+    text-shadow: 0px 0px 3px #ffffffd2;
+    transition: transform 0.1s ease,
+        box-shadow 0.1s ease,
+        opacity 0.1s ease;
 }
 
 .equals {
+    font-size: 55px;
     width: 278px;
-    color: #1a1919;
-    background-color: #ff000043;
+    background-color: var(--main-red);
+    box-shadow: 0 6px 0 1px #2c0000; 
 }
 
 .num {
-    color: #191a19;
-    background-color: #00ff0d43;
+    font-size: 45px;
+    background-color: var(--main-green);
+    box-shadow: 0 6px 0 1px #013500; 
 }
 
 .power {
-    color: #7f0000;
+    color: var(--main-red);
+    text-shadow: 0px 0px 3px #ff0000d2;
 }
 
 button:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
-    outline: 1px outset #7f0000;
-    box-shadow: 0 6.5px 0 1.5px #000000; 
-    border-radius: 1.6vh;
+    outline: 1px outset var(--on-hover-red);
+    transform: scale(1.03);
+    border-radius: 11px;
 }
 
-.equals:hover {
-    outline: 1px outset #ffffff;
-    color: #ffffff;
-}
-
-.num:hover {
-    outline: 1px outset #ffffff;
-    color: #ffffff;
+.equals:hover, .num:hover {
+    outline: 1px outset var(--main-white);
 }
 
 button:active {
     transform: translateY(6px);
-    box-shadow: 0 1px 0 3px #000000;
-    text-shadow: 0px 0px 6px #ffffff;
+    transition: transform 0.1s ease,
+        text-shadow 0.3s ease;
+    box-shadow: 0 2px 0 1px #000000;
+    text-shadow: 0px 0px 6px var(--main-white);
 }
 
 .power:active {
-    text-shadow: 0px 0px 6px #760000d5;
+    text-shadow: 0px 0px 6px #e60000e8;
 }
 
 .off-state .display-container {
-    background-color: #3b55533a;
+    background-color: #5372783a;
     box-shadow: none;
-    outline: 4px solid #0c0c0c46;
+    outline: 4px solid #0c0c0c15;
+    transition: all 0.7s ease;
 }
 
 .off-state button {
     pointer-events: none;
     transition: all 0.7s ease;
     text-shadow: none;
-    color: #575757d8;
+    color: #3131317c;
     transform: translateY(6px);
     box-shadow: 0 1px 0 3px #000000;
 }
 
 .off-state .power {
     pointer-events: auto;
-    color: #ff000043;
+    color: var(--off-state-red);
     text-shadow: none;
     box-shadow: none;
     animation: pulse 3s infinite;
 }
 
+.off-state .power:hover {
+    outline: 1px outset #ffffff80;
+}
+
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 #ff000066;
-        outline: 1px outset #919191;
+        box-shadow: 0 0 0 0 var(--off-state-red);
     }
-    40% {
-        box-shadow: 0 0 0 10px #ff000000;
-        outline: 1px outset #7f0000;
+    20% {
+        outline: 1px outset var(--on-hover-red);
+    }
+    70% {
+        box-shadow: 0 0 0 10px transparent;
     }
     100% {
-        box-shadow: 0 0 0 0 #ff000000;
-        outline: 1px outset #919191;
+        box-shadow: 0 0 0 0 transparent;
+        outline: 1px outset #ffffff80;
     }
 }
-
-.off-state .equals {
-    color: #000000;
-}
-
-.off-state .num {
-    color: #000000;
-}
-
-.off-state .power:hover {
-    transition: all 0.1s ease;
-    outline: 1px outset #919191;
-    transform: translateY(6px) scale(1.02);
-}
-
