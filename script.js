@@ -25,10 +25,11 @@ const state = {
 buttons.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
-    if (btn.classList.contains("power")) {
+    if (btn.value === "power") {
         togglePower(btn);
         return;
     }
+    handleOperand(btn.value);
 });
 
 function togglePower(btn) {
@@ -79,4 +80,18 @@ function divide(value1, value2) {
 
 function operate(operator, value1, value2) {
     return operations[operator](value1, value2);
+}
+
+function updateDisplay() {
+    upperTxt.textContent =
+        `${state.operand1} ${state.operator || ""} ${state.operand2}`;
+}
+
+function handleOperand(value) {
+    if (!state.operator) {
+        state.operand1 += value;
+    } else {
+        state.operand2 += value;
+    }
+    updateDisplay();
 }
