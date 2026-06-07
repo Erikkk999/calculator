@@ -14,6 +14,13 @@ const operations = {
     "/": divide,
 };
 
+const operatorDisplay = {
+    "+": "+",
+    "-": "-",
+    "*": "×",
+    "/": "÷",
+};
+
 const state = {
     "isPowerOn": false,
     "powerMessageTimeout": null,
@@ -29,7 +36,8 @@ buttons.addEventListener("click", (e) => {
         togglePower(btn);
         return;
     }
-    handleOperand(btn.value);
+    calculate(btn);
+    console.log(state.operand1, state.operator, state.operand2)
 });
 
 function togglePower(btn) {
@@ -62,6 +70,38 @@ function togglePower(btn) {
     }
 }
 
+function updateDisplay() {
+    upperTxt.textContent = `${state.operand1}
+        ${operatorDisplay[state.operator] || ""}
+        ${state.operand2}`;
+}
+
+function calculate(btn) {
+    const value = btn.value;
+
+    if (btn.classList.contains("operator")) {
+        setOperator(value);
+    } else {
+        handleOperand(value);
+    }
+
+    updateDisplay();
+}
+
+function handleOperand(value) {
+    if (!state.operator) {
+        state.operand1 += value;
+    } else {
+        state.operand2 += value;
+    }
+}
+
+function setOperator(value) {
+    if (!state.operand1) return;
+
+    state.operator = value;
+}
+
 function add(value1, value2) {
     return value1 + value2;
 }
@@ -80,18 +120,4 @@ function divide(value1, value2) {
 
 function operate(operator, value1, value2) {
     return operations[operator](value1, value2);
-}
-
-function updateDisplay() {
-    upperTxt.textContent =
-        `${state.operand1} ${state.operator || ""} ${state.operand2}`;
-}
-
-function handleOperand(value) {
-    if (!state.operator) {
-        state.operand1 += value;
-    } else {
-        state.operand2 += value;
-    }
-    updateDisplay();
 }
