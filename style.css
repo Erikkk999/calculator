@@ -89,6 +89,11 @@ h1 {
     text-shadow: 0px 0px 5px #002729d2;
 }
 
+.instant-result {
+    color: #1414147a;
+    opacity: 0.7;
+}
+
 .welcome {
     justify-content: center;
 }

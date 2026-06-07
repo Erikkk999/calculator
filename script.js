@@ -28,6 +28,8 @@ const state = {
     "operator": null,
     "operand1": "",
     "operand2": "",
+    "result": "",
+    "isSafeDivide": true,
 };
 
 buttons.addEventListener("click", (e) => {
@@ -79,6 +81,14 @@ function updateDisplay() {
     upperTxt.textContent = `${state.operand1}
         ${operatorDisplay[state.operator] || ""}
         ${state.operand2}`;
+    
+    if (state.operand1 && state.operator && state.operand2) {
+        lowerTxt.textContent = `${state.result}`;
+        lowerTxt.classList.add("instant-result");
+    } else {
+        lowerTxt.textContent = "";
+        lowerTxt.classList.remove("instant-result");
+    }
 }
 
 function calculate(btn) {
@@ -96,6 +106,7 @@ function calculate(btn) {
         handleOperand(value);
     }
 
+    getResult();
     updateDisplay();
 }
 
@@ -110,13 +121,35 @@ function handleOperand(value) {
 function setOperator(value) {
     if (!state.operand1) return;
 
+    if (state.operand2) {
+        getResult();
+        if (!state.isSafeDivide) return;
+        state.operand1 = state.result;
+        state.operand2 = "";
+    }
+
     state.operator = value;
+}
+
+function getResult() {
+    state.isSafeDivide = true;
+
+    if (!state.operator || !state.operand2) return;
+
+    if (+state.operand2 === 0 && state.operator === "/") {
+        state.isSafeDivide = false;
+        state.result = "Can't divide with zero";
+        return;
+    }
+    
+    state.result = operate(state.operator, +state.operand1, +state.operand2);
 }
 
 function clearAll() {
     state.operand1 = "";
     state.operand2 = "";
     state.operator = null;
+    state.result = "";
 }
 
 function backspace() {
