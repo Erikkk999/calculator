@@ -23,6 +23,7 @@ const operatorDisplay = {
 
 const state = {
     "isPowerOn": false,
+    "isBooting": false,
     "powerMessageTimeout": null,
     "operator": null,
     "operand1": "",
@@ -42,26 +43,30 @@ buttons.addEventListener("click", (e) => {
 
 function togglePower(btn) {
     state.isPowerOn = !state.isPowerOn;
-
     clearTimeout(state.powerMessageTimeout);
 
     if (state.isPowerOn) {
+        state.isBooting = true;
         mainContainer.classList.remove("off-state");
         welcomeDisp.classList.add("welcome");
         upperTxt.textContent = "Buongiorno!";
         btn.textContent = "OFF";
 
         state.powerMessageTimeout = setTimeout(() => {
+            state.isBooting = false;
             upperTxt.textContent = "";
             welcomeDisp.classList.remove("welcome");
         }, BOOT_DELAY_MS);
 
     } else {
+        state.isBooting = true;
         welcomeDisp.classList.add("welcome");
         upperTxt.textContent = "Arrivederci!";
         lowerTxt.textContent = "";
 
         state.powerMessageTimeout = setTimeout(() => {
+            state.isBooting = false;
+            clearAll();
             upperTxt.textContent = "";
             welcomeDisp.classList.remove("welcome");
             mainContainer.classList.add("off-state");
@@ -79,7 +84,13 @@ function updateDisplay() {
 function calculate(btn) {
     const value = btn.value;
 
-    if (btn.classList.contains("operator")) {
+    if (state.isBooting || !state.isPowerOn) return;
+
+    if (value === "clear-all") {
+        clearAll();
+    } else if (value === "backspace") {
+        backspace();
+    } else if (btn.classList.contains("operator")) {
         setOperator(value);
     } else {
         handleOperand(value);
@@ -100,6 +111,22 @@ function setOperator(value) {
     if (!state.operand1) return;
 
     state.operator = value;
+}
+
+function clearAll() {
+    state.operand1 = "";
+    state.operand2 = "";
+    state.operator = null;
+}
+
+function backspace() {
+    if (state.operand2) {
+        state.operand2 = state.operand2.slice(0, -1);
+    } else if (state.operator) {
+        state.operator = null;
+    } else {
+        state.operand1 = state.operand1.slice(0, -1);
+    }
 }
 
 function add(value1, value2) {
