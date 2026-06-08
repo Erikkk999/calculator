@@ -94,6 +94,10 @@ h1 {
     opacity: 0.7;
 }
 
+.final-result {
+    font-size: 60px;
+}
+
 .welcome {
     justify-content: center;
 }

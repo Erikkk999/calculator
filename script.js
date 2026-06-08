@@ -30,6 +30,7 @@ const state = {
     "operand2": "",
     "result": "",
     "isSafeDivide": true,
+    "isFinal": false,
 };
 
 buttons.addEventListener("click", (e) => {
@@ -81,13 +82,19 @@ function updateDisplay() {
     upperTxt.textContent = `${state.operand1}
         ${operatorDisplay[state.operator] || ""}
         ${state.operand2}`;
-    
-    if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.textContent = `${state.result}`;
+
+    if (state.isFinal) {
+        upperTxt.textContent = "";
+        lowerTxt.textContent = `= ${state.result}`;
+        lowerTxt.classList.remove("instant-result");
+        lowerTxt.classList.add("final-result");
+    } else if (state.operand1 && state.operator && state.operand2) {
+        lowerTxt.textContent = `= ${state.result}`;
         lowerTxt.classList.add("instant-result");
+        lowerTxt.classList.remove("final-result");
     } else {
         lowerTxt.textContent = "";
-        lowerTxt.classList.remove("instant-result");
+        lowerTxt.classList.remove("instant-result", "final-result");
     }
 }
 
@@ -100,6 +107,8 @@ function calculate(btn) {
         clearAll();
     } else if (value === "backspace") {
         backspace();
+    } else if (value === "=") {
+        handleEquals();
     } else if (btn.classList.contains("operator")) {
         setOperator(value);
     } else {
@@ -129,6 +138,7 @@ function setOperator(value) {
     }
 
     state.operator = value;
+    state.isFinal = false;
 }
 
 function getResult() {
@@ -142,7 +152,19 @@ function getResult() {
         return;
     }
     
-    state.result = operate(state.operator, +state.operand1, +state.operand2);
+    state.result =
+        operate(state.operator, +state.operand1, +state.operand2);
+}
+
+function handleEquals() {
+    if (!state.isSafeDivide ||
+        !state.operator ||
+        !state.operand2) return;
+
+    state.operand1 = state.result;
+    state.operand2 = "";
+    state.operator = null;
+    state.isFinal = true;
 }
 
 function clearAll() {
@@ -150,6 +172,8 @@ function clearAll() {
     state.operand2 = "";
     state.operator = null;
     state.result = "";
+    state.isSafeDivide = true;
+    state.isFinal = false;
 }
 
 function backspace() {
