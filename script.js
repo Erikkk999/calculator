@@ -108,6 +108,8 @@ function calculate(btn) {
         backspace();
     } else if (value === "=") {
         handleEquals();
+    } else if (value === "-" && !state.operand1) {
+        state.operand1 = "-";
     } else if (btn.classList.contains("operator")) {
         setOperator(value);
     } else {
@@ -153,7 +155,7 @@ function updateOperand(currentValue, value) {
 }
 
 function setOperator(value) {
-    if (!state.operand1) return;
+    if (!state.operand1 || state.operand1 === "-") return;
 
     if (state.operand2) {
         getResult();
