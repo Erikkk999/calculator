@@ -88,7 +88,7 @@ function updateDisplay() {
         lowerTxt.classList.remove("instant-result");
         lowerTxt.classList.add("final-result");
     } else if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.textContent = `= ${state.fixedResult}`;
+        lowerTxt.textContent = `${state.fixedResult}`;
         lowerTxt.classList.add("instant-result");
         lowerTxt.classList.remove("final-result");
     } else {
@@ -124,10 +124,32 @@ function handleOperand(value) {
     }
 
     if (!state.operator) {
-        state.operand1 += value;
+        state.operand1 = updateOperand(state.operand1, value);
     } else {
-        state.operand2 += value;
+        state.operand2 = updateOperand(state.operand2, value);
     }
+}
+
+function updateOperand(currentValue, value) {
+    if (value === "." && currentValue.includes(".")) {
+        return currentValue;
+    }
+
+    if (currentValue === "" && value === ".") {
+        return "0.";
+    }
+
+    if (currentValue === "0" && value !== ".") {
+        return value;
+    }
+
+    if (value !== ".") {
+        const digitsOnly = currentValue.replace(/[^0-9]/g, "");
+        
+        if (digitsOnly.length >= 9) return currentValue;
+    }
+
+    return currentValue + value;
 }
 
 function setOperator(value) {
