@@ -28,7 +28,7 @@ const state = {
     "operator": null,
     "operand1": "",
     "operand2": "",
-    "result": "",
+    "fixedResult": "",
     "isSafeDivide": true,
     "isFinal": false,
 };
@@ -41,7 +41,6 @@ buttons.addEventListener("click", (e) => {
         return;
     }
     calculate(btn);
-    console.log(state.operand1, state.operator, state.operand2)
 });
 
 function togglePower(btn) {
@@ -85,11 +84,11 @@ function updateDisplay() {
 
     if (state.isFinal) {
         upperTxt.textContent = "";
-        lowerTxt.textContent = `= ${state.result}`;
+        lowerTxt.textContent = `= ${state.fixedResult}`;
         lowerTxt.classList.remove("instant-result");
         lowerTxt.classList.add("final-result");
     } else if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.textContent = `= ${state.result}`;
+        lowerTxt.textContent = `= ${state.fixedResult}`;
         lowerTxt.classList.add("instant-result");
         lowerTxt.classList.remove("final-result");
     } else {
@@ -120,6 +119,10 @@ function calculate(btn) {
 }
 
 function handleOperand(value) {
+    if (state.isFinal) {
+        clearAll();
+    }
+
     if (!state.operator) {
         state.operand1 += value;
     } else {
@@ -133,7 +136,7 @@ function setOperator(value) {
     if (state.operand2) {
         getResult();
         if (!state.isSafeDivide) return;
-        state.operand1 = state.result;
+        state.operand1 = state.fixedResult;
         state.operand2 = "";
     }
 
@@ -148,12 +151,19 @@ function getResult() {
 
     if (+state.operand2 === 0 && state.operator === "/") {
         state.isSafeDivide = false;
-        state.result = "Can't divide with zero";
+        state.fixedResult = "Can't divide with zero";
         return;
     }
     
-    state.result =
+    const result =
         operate(state.operator, +state.operand1, +state.operand2);
+
+    state.fixedResult = getFixedResult(result);
+}
+
+function getFixedResult(value) {
+    return Number.isInteger(value) ? value.toString() :
+        (Math.round(value * 1000) / 1000).toString();
 }
 
 function handleEquals() {
@@ -161,7 +171,7 @@ function handleEquals() {
         !state.operator ||
         !state.operand2) return;
 
-    state.operand1 = state.result;
+    state.operand1 = state.fixedResult;
     state.operand2 = "";
     state.operator = null;
     state.isFinal = true;
@@ -171,7 +181,7 @@ function clearAll() {
     state.operand1 = "";
     state.operand2 = "";
     state.operator = null;
-    state.result = "";
+    state.fixedResult = "";
     state.isSafeDivide = true;
     state.isFinal = false;
 }
