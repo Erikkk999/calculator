@@ -1,6 +1,7 @@
 const mainContainer = document.querySelector(".main-container");
 const welcomeDisp = document.querySelector(".upper-display");
 const buttons = document.querySelector(".button-container");
+const powerBtn = document.querySelector("button[value='power']");
 const upperTxt = document.querySelector(".upper-text");
 const lowerTxt = document.querySelector(".lower-text");
 
@@ -14,7 +15,7 @@ const operations = {
     "/": divide,
 };
 
-const operatorDisplay = {
+const opDisplay = {
     "+": "+",
     "-": "-",
     "*": "×",
@@ -33,17 +34,44 @@ const state = {
     "isFinal": false,
 };
 
+const keyExceptions = {
+    "Enter": "=",
+    "Backspace": "backspace",
+    "Delete": "clear-all",
+    "Escape": "power",
+};
+
 buttons.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
-    if (btn.value === "power") {
-        togglePower(btn);
-        return;
-    }
-    calculate(btn);
+    
+    handleInput(btn.value);
 });
 
-function togglePower(btn) {
+window.addEventListener("keydown", (e) => {
+    if (e.defaultPrevented) return;
+
+    const value = keyExceptions[e.key] || e.key;
+
+    const validActions =
+        "0 1 2 3 4 5 6 7 8 9 . + - * / = backspace clear-all power".split(" ");
+
+    if (!validActions.includes(value)) return;
+
+    e.preventDefault();
+
+    handleInput(value);
+});
+
+function handleInput(value) {
+    if (value === "power") {
+        togglePower();
+    } else {
+        calculate(value);
+    }
+}
+
+function togglePower() {
     state.isPowerOn = !state.isPowerOn;
     clearTimeout(state.powerMessageTimeout);
 
@@ -52,7 +80,7 @@ function togglePower(btn) {
         mainContainer.classList.remove("off-state");
         welcomeDisp.classList.add("welcome");
         upperTxt.textContent = "Buongiorno!";
-        btn.textContent = "OFF";
+        powerBtn.textContent = "OFF";
 
         state.powerMessageTimeout = setTimeout(() => {
             state.isBooting = false;
@@ -72,15 +100,15 @@ function togglePower(btn) {
             upperTxt.textContent = "";
             welcomeDisp.classList.remove("welcome");
             mainContainer.classList.add("off-state");
-            btn.textContent = "ON";
+            powerBtn.textContent = "ON";
         }, SHUTDOWN_DELAY_MS);
     }
 }
 
 function updateDisplay() {
-    upperTxt.textContent = `${state.operand1}
-        ${operatorDisplay[state.operator] || ""}
-        ${state.operand2}`;
+    upperTxt.textContent =
+        `${state.operand1} ${opDisplay[state.operator] || ""} ${state.operand2}`
+            .trim();
 
     if (state.isFinal) {
         upperTxt.textContent = "";
@@ -97,8 +125,7 @@ function updateDisplay() {
     }
 }
 
-function calculate(btn) {
-    const value = btn.value;
+function calculate(value) {
 
     if (state.isBooting || !state.isPowerOn) return;
 
@@ -110,7 +137,7 @@ function calculate(btn) {
         handleEquals();
     } else if (value === "-" && !state.operand1) {
         state.operand1 = "-";
-    } else if (btn.classList.contains("operator")) {
+    } else if (value in operations) {
         setOperator(value);
     } else {
         handleOperand(value);
@@ -133,12 +160,10 @@ function handleOperand(value) {
 }
 
 function updateOperand(currentValue, value) {
-    if (value === "." && currentValue.includes(".")) {
-        return currentValue;
-    }
-
-    if (currentValue === "" && value === ".") {
-        return "0.";
+    if (value === ".") {
+        if (currentValue.includes(".")) return currentValue;
+        if (currentValue === "") return "0.";
+        if (currentValue === "-") return "-0.";
     }
 
     if (currentValue === "0" && value !== ".") {
