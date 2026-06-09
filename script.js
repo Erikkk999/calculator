@@ -52,14 +52,12 @@ window.addEventListener("keydown", (e) => {
     if (e.defaultPrevented) return;
 
     const value = keyExceptions[e.key] || e.key;
-
     const validActions =
         "0 1 2 3 4 5 6 7 8 9 . + - * / = backspace clear-all power".split(" ");
 
     if (!validActions.includes(value)) return;
 
     e.preventDefault();
-
     handleInput(value);
 });
 
@@ -72,37 +70,41 @@ function handleInput(value) {
 }
 
 function togglePower() {
-    state.isPowerOn = !state.isPowerOn;
     clearTimeout(state.powerMessageTimeout);
 
-    if (state.isPowerOn) {
-        state.isBooting = true;
-        mainContainer.classList.remove("off-state");
-        welcomeDisp.classList.add("welcome");
-        upperTxt.textContent = "Buongiorno!";
-        powerBtn.textContent = "OFF";
+    state.isPowerOn = !state.isPowerOn;
+    state.isBooting = true;
+    displayMessage();
 
-        state.powerMessageTimeout = setTimeout(() => {
-            state.isBooting = false;
-            upperTxt.textContent = "";
-            welcomeDisp.classList.remove("welcome");
-        }, BOOT_DELAY_MS);
+    const delay = state.isPowerOn ?
+        BOOT_DELAY_MS : SHUTDOWN_DELAY_MS;
 
-    } else {
-        state.isBooting = true;
-        welcomeDisp.classList.add("welcome");
-        upperTxt.textContent = "Arrivederci!";
-        lowerTxt.textContent = "";
-
-        state.powerMessageTimeout = setTimeout(() => {
-            state.isBooting = false;
+    state.powerMessageTimeout = setTimeout(() => {
+        state.isBooting = false;
+        if (!state.isPowerOn) {
             clearAll();
-            upperTxt.textContent = "";
-            welcomeDisp.classList.remove("welcome");
-            mainContainer.classList.add("off-state");
-            powerBtn.textContent = "ON";
-        }, SHUTDOWN_DELAY_MS);
+        }
+        displayMessage();
+    }, delay);
+}
+
+function displayMessage() {
+    if (!state.isPowerOn && !state.isBooting) {
+        mainContainer.classList.add("off-state");
+    } else {
+        mainContainer.classList.remove("off-state");
     }
+
+    if (state.isBooting) {
+        welcomeDisp.classList.add("welcome");
+        upperTxt.textContent = state.isPowerOn ? "Buongiorno!" : "Arrivederci!";
+        if (!state.isPowerOn) lowerTxt.textContent = ""; 
+    } else {
+        welcomeDisp.classList.remove("welcome");
+        upperTxt.textContent = "";
+    }
+
+    powerBtn.textContent = state.isPowerOn ? "OFF" : "ON";
 }
 
 function updateDisplay() {
@@ -117,8 +119,8 @@ function updateDisplay() {
         lowerTxt.classList.add("final-result");
     } else if (state.operand1 && state.operator && state.operand2) {
         lowerTxt.textContent = `${state.fixedResult}`;
-        lowerTxt.classList.add("instant-result");
         lowerTxt.classList.remove("final-result");
+        lowerTxt.classList.add("instant-result");
     } else {
         lowerTxt.textContent = "";
         lowerTxt.classList.remove("instant-result", "final-result");
@@ -126,7 +128,6 @@ function updateDisplay() {
 }
 
 function calculate(value) {
-
     if (state.isBooting || !state.isPowerOn) return;
 
     if (value === "clear-all") {
@@ -206,7 +207,7 @@ function getResult() {
     
     const result =
         operate(state.operator, +state.operand1, +state.operand2);
-
+        
     state.fixedResult = getFixedResult(result);
 }
 
