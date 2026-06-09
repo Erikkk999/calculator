@@ -97,7 +97,7 @@ function displayMessage() {
 
     if (state.isBooting) {
         welcomeDisp.classList.add("welcome");
-        upperTxt.textContent = state.isPowerOn ? "Buongiorno!" : "Arrivederci!";
+        upperTxt.textContent = state.isPowerOn ? getGreeting() : "Arrivederci!";
         if (!state.isPowerOn) lowerTxt.textContent = ""; 
     } else {
         welcomeDisp.classList.remove("welcome");
@@ -264,4 +264,8 @@ function divide(value1, value2) {
 
 function operate(operator, value1, value2) {
     return operations[operator](value1, value2);
+}
+
+function getGreeting() {
+    return new Date().getHours() >= 14 ? "Buonasera!" : "Buongiorno!";
 }
