@@ -29,7 +29,7 @@ const state = {
     "operator": null,
     "operand1": "",
     "operand2": "",
-    "fixedResult": "",
+    "formattedResult": "",
     "isSafeDivide": true,
     "isFinal": false,
 };
@@ -74,7 +74,7 @@ function togglePower() {
 
     state.isPowerOn = !state.isPowerOn;
     state.isBooting = true;
-    displayMessage();
+    renderPowerState();
 
     const delay = state.isPowerOn ?
         BOOT_DELAY_MS : SHUTDOWN_DELAY_MS;
@@ -84,11 +84,11 @@ function togglePower() {
         if (!state.isPowerOn) {
             clearAll();
         }
-        displayMessage();
+        renderPowerState();
     }, delay);
 }
 
-function displayMessage() {
+function renderPowerState() {
     if (!state.isPowerOn && !state.isBooting) {
         mainContainer.classList.add("off-state");
     } else {
@@ -108,17 +108,28 @@ function displayMessage() {
 }
 
 function updateDisplay() {
-    upperTxt.textContent =
-        `${state.operand1} ${opDisplay[state.operator] || ""} ${state.operand2}`
-            .trim();
+    const displayOperand1 = addSeparators(state.operand1);
+    const displayOperand2 = addSeparators(state.operand2);
+    const displayResult = state.formattedResult ?
+        addSeparators(state.formattedResult) : "";
+
+    const upperTxtString =
+        `${displayOperand1} ${opDisplay[state.operator] || ""} ${displayOperand2}`
+        .trim();
+
+    upperTxtString.length > 20 ?
+        welcomeDisp.style.setProperty("--font", "34px") :
+        welcomeDisp.style.removeProperty("--font");
+
+    upperTxt.textContent = upperTxtString;
 
     if (state.isFinal) {
         upperTxt.textContent = "";
-        lowerTxt.textContent = `= ${state.fixedResult}`;
+        lowerTxt.textContent = `= ${displayResult}`;
         lowerTxt.classList.remove("instant-result");
         lowerTxt.classList.add("final-result");
     } else if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.textContent = `${state.fixedResult}`;
+        lowerTxt.textContent = `${displayResult}`;
         lowerTxt.classList.remove("final-result");
         lowerTxt.classList.add("instant-result");
     } else {
@@ -144,7 +155,7 @@ function calculate(value) {
         handleOperand(value);
     }
 
-    getResult();
+    computeResult();
     updateDisplay();
 }
 
@@ -174,7 +185,7 @@ function updateOperand(currentValue, value) {
     if (value !== ".") {
         const digitsOnly = currentValue.replace(/[^0-9]/g, "");
         
-        if (digitsOnly.length >= 9) return currentValue;
+        if (digitsOnly.length >= 12) return currentValue;
     }
 
     return currentValue + value;
@@ -184,9 +195,9 @@ function setOperator(value) {
     if (!state.operand1 || state.operand1 === "-") return;
 
     if (state.operand2) {
-        getResult();
+        computeResult();
         if (!state.isSafeDivide) return;
-        state.operand1 = state.fixedResult;
+        state.operand1 = state.formattedResult;
         state.operand2 = "";
     }
 
@@ -194,26 +205,34 @@ function setOperator(value) {
     state.isFinal = false;
 }
 
-function getResult() {
+function computeResult() {
     state.isSafeDivide = true;
 
     if (!state.operator || !state.operand2) return;
 
     if (+state.operand2 === 0 && state.operator === "/") {
         state.isSafeDivide = false;
-        state.fixedResult = "Can't divide with zero";
+        state.formattedResult = "Can't divide with zero";
         return;
     }
     
     const result =
         operate(state.operator, +state.operand1, +state.operand2);
         
-    state.fixedResult = getFixedResult(result);
+    state.formattedResult = formatForDisplay(result);
 }
 
-function getFixedResult(value) {
-    return Number.isInteger(value) ? value.toString() :
-        (Math.round(value * 1000) / 1000).toString();
+function formatForDisplay(value) {
+    const maxChars = 12;
+    const strValue = value.toString();
+  
+    if (strValue.length <= maxChars) return strValue;
+
+    if (Math.abs(value) >= 1e9 || (Math.abs(value) < 0.0001 && value !== 0)) {
+        return value.toExponential(maxChars - 5); 
+    }
+
+    return Number(value.toPrecision(maxChars)).toString();
 }
 
 function handleEquals() {
@@ -221,7 +240,7 @@ function handleEquals() {
         !state.operator ||
         !state.operand2) return;
 
-    state.operand1 = state.fixedResult;
+    state.operand1 = state.formattedResult;
     state.operand2 = "";
     state.operator = null;
     state.isFinal = true;
@@ -231,7 +250,7 @@ function clearAll() {
     state.operand1 = "";
     state.operand2 = "";
     state.operator = null;
-    state.fixedResult = "";
+    state.formattedResult = "";
     state.isSafeDivide = true;
     state.isFinal = false;
 }
@@ -264,6 +283,15 @@ function divide(value1, value2) {
 
 function operate(operator, value1, value2) {
     return operations[operator](value1, value2);
+}
+
+function addSeparators(number) {
+    return [...number]
+        .reverse()
+        .map((num, i) => (i > 0 && i % 3 === 0 &&
+            num !== "-" && !number.includes(".")) ? `${num} ` : num)
+        .reverse()
+        .join("");
 }
 
 function getGreeting() {

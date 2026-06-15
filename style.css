@@ -67,8 +67,8 @@ h1 {
     align-items: center;
     background-color: #86e5f06a;
     box-shadow: 0px 0px 30px 1px #86e5f06a;
-    outline: 4px solid #14191820;
-    height: 110px;
+    outline: 4px solid #68b0b818;
+    height: 130px;
     width: 570px;
     border-radius: 10px;
 }
@@ -80,11 +80,12 @@ h1 {
     justify-content: right;
     width: 540px;
     overflow: auto;
+    padding: 0px 30px;
 }
 
 .upper-text,
 .lower-text {
-    font-size: 45px;
+    font-size: var(--font, 56px);
     color: #0000007a;
     text-shadow: 0px 0px 5px #002729d2;
 }
@@ -95,7 +96,7 @@ h1 {
 }
 
 .final-result {
-    font-size: 55px;
+    font-size: 68px;
 }
 
 .welcome {
@@ -103,7 +104,7 @@ h1 {
 }
 
 .welcome .upper-text {
-    font-size: 60px;
+    font-size: 70px;
     font-family: cursive;
 }
 
@@ -111,14 +112,14 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    margin-top: 50px;
+    margin-top: 30px;
     width: 600px;
     height: 510px;
 }
 
 button {
+    background: linear-gradient(#1c1c1c77, #000000c3);
     cursor: pointer;
-    background-color: #00000048;
     color: var(--main-white);
     outline: 1px outset #ffffff80;
     border-radius: 10px;
@@ -137,13 +138,13 @@ button {
 .equals {
     font-size: 55px;
     width: 278px;
-    background-color: var(--main-red);
+    background: linear-gradient(var(--main-red), #ff000046);
     box-shadow: 0 6px 0 1px #2c0000; 
 }
 
 .num {
     font-size: 45px;
-    background-color: var(--main-green);
+    background: linear-gradient(var(--main-green), #00ff0d46);
     box-shadow: 0 6px 0 1px #013500; 
 }
 
