@@ -182,7 +182,7 @@ function updateOperand(currentValue, value) {
     }
 
     if ((currentValue === "0" || currentValue === "-0") && value !== ".") {
-        return currentValue === "-0" ? "-" + value : "0";
+        return currentValue === "-0" ? "-" + value : value;
     }
 
     if (value !== ".") {
@@ -304,7 +304,7 @@ function addSeparators(number) {
         .join("");
 
     const result = isNegative ? "-" + formatted : formatted;
-    
+
     return decimal !== undefined ? `${result}.${decimal}` : result;
 }
 
