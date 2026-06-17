@@ -31,6 +31,7 @@ const state = {
     "operand2": "",
     "formattedResult": "",
     "isSafeDivide": true,
+    "error": "",
     "isFinal": false,
 };
 
@@ -76,8 +77,9 @@ function togglePower() {
     state.isBooting = true;
     renderPowerState();
 
-    const delay = state.isPowerOn ?
-        BOOT_DELAY_MS : SHUTDOWN_DELAY_MS;
+    const delay = state.isPowerOn
+        ? BOOT_DELAY_MS
+        : SHUTDOWN_DELAY_MS;
 
     state.powerMessageTimeout = setTimeout(() => {
         state.isBooting = false;
@@ -110,28 +112,29 @@ function renderPowerState() {
 function updateDisplay() {
     const displayOperand1 = addSeparators(state.operand1);
     const displayOperand2 = addSeparators(state.operand2);
-    const displayResult = state.formattedResult ?
-        addSeparators(state.formattedResult) : "";
+    const displayOperator = opDisplay[state.operator] || "";
+    const displayResult = state.formattedResult
+        ? addSeparators(state.formattedResult)
+        : state.error;
 
-    const upperTxtString =
-        `${displayOperand1} ${opDisplay[state.operator] || ""} ${displayOperand2}`
-        .trim();
+    const upperTxtString = state.isFinal
+        ? ""
+        : `${displayOperand1} ${displayOperator} ${displayOperand2}`.trim();
 
-    upperTxtString.length > 20 ?
-        welcomeDisp.style.setProperty("--font", "34px") :
-        welcomeDisp.style.removeProperty("--font");
+    upperTxtString.length > 20
+        ? upperTxt.classList.add("upper-text-size")
+        : upperTxt.classList.remove("upper-text-size");
 
     upperTxt.textContent = upperTxtString;
 
     if (state.isFinal) {
-        upperTxt.textContent = "";
-        lowerTxt.textContent = `= ${displayResult}`;
         lowerTxt.classList.remove("instant-result");
         lowerTxt.classList.add("final-result");
+        lowerTxt.textContent = `= ${displayResult}`;
     } else if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.textContent = `${displayResult}`;
         lowerTxt.classList.remove("final-result");
         lowerTxt.classList.add("instant-result");
+        lowerTxt.textContent = `${displayResult}`;
     } else {
         lowerTxt.textContent = "";
         lowerTxt.classList.remove("instant-result", "final-result");
@@ -178,8 +181,8 @@ function updateOperand(currentValue, value) {
         if (currentValue === "-") return "-0.";
     }
 
-    if (currentValue === "0" && value !== ".") {
-        return value;
+    if ((currentValue === "0" || currentValue === "-0") && value !== ".") {
+        return currentValue === "-0" ? "-" + value : "0";
     }
 
     if (value !== ".") {
@@ -195,7 +198,6 @@ function setOperator(value) {
     if (!state.operand1 || state.operand1 === "-") return;
 
     if (state.operand2) {
-        computeResult();
         if (!state.isSafeDivide) return;
         state.operand1 = state.formattedResult;
         state.operand2 = "";
@@ -212,7 +214,8 @@ function computeResult() {
 
     if (+state.operand2 === 0 && state.operator === "/") {
         state.isSafeDivide = false;
-        state.formattedResult = "Can't divide with zero";
+        state.formattedResult = "";
+        state.error = "Can't divide with zero";
         return;
     }
     
@@ -236,9 +239,9 @@ function formatForDisplay(value) {
 }
 
 function handleEquals() {
-    if (!state.isSafeDivide ||
-        !state.operator ||
-        !state.operand2) return;
+    if (!state.isSafeDivide
+        || !state.operator
+        || !state.operand2) return;
 
     state.operand1 = state.formattedResult;
     state.operand2 = "";
@@ -286,12 +289,23 @@ function operate(operator, value1, value2) {
 }
 
 function addSeparators(number) {
-    return [...number]
+    const strNumber = String(number);
+
+    if (strNumber.includes("e") || strNumber === "-") return strNumber;
+
+    const [int, decimal] = strNumber.split(".");
+    const isNegative = int.startsWith("-");
+    const digits = isNegative ? int.slice(1) : int;
+
+    const formatted = [...digits]
         .reverse()
-        .map((num, i) => (i > 0 && i % 3 === 0 &&
-            num !== "-" && !number.includes(".")) ? `${num} ` : num)
+        .map((d, i) => (i && i % 3 === 0 ? d + " " : d))
         .reverse()
         .join("");
+
+    const result = isNegative ? "-" + formatted : formatted;
+    
+    return decimal !== undefined ? `${result}.${decimal}` : result;
 }
 
 function getGreeting() {
