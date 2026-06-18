@@ -85,18 +85,31 @@ h1 {
 
 .upper-text,
 .lower-text {
-    font-size: var(--font, 56px);
+    display: flex;
+    align-items: center;
+    font-size: 56px;
     color: #0000007a;
     text-shadow: 0px 0px 5px #002729d2;
 }
 
-.instant-result {
+.upper-text-size {
+    height: 64px;
+    font-size: 33px;
+}
+
+.lower-text {
     color: #1414147a;
     opacity: 0.7;
 }
 
 .final-result {
     font-size: 68px;
+    color: #0000007a;
+    opacity: 1;
+}
+
+.lower-text-size {
+    font-size: 50px;
 }
 
 .welcome {

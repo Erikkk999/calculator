@@ -121,23 +121,19 @@ function updateDisplay() {
         ? ""
         : `${displayOperand1} ${displayOperator} ${displayOperand2}`.trim();
 
-    upperTxtString.length > 20
-        ? upperTxt.classList.add("upper-text-size")
-        : upperTxt.classList.remove("upper-text-size");
-
+    upperTxt.classList.toggle("upper-text-size", upperTxtString.length > 20);
     upperTxt.textContent = upperTxtString;
+    lowerTxt.classList.remove("final-result");
 
     if (state.isFinal) {
-        lowerTxt.classList.remove("instant-result");
         lowerTxt.classList.add("final-result");
+        lowerTxt.classList.toggle("lower-text-size", displayResult.length > 14);
         lowerTxt.textContent = `= ${displayResult}`;
     } else if (state.operand1 && state.operator && state.operand2) {
-        lowerTxt.classList.remove("final-result");
-        lowerTxt.classList.add("instant-result");
-        lowerTxt.textContent = `${displayResult}`;
+        lowerTxt.classList.toggle("lower-text-size", displayResult.length > 17);
+        lowerTxt.textContent = displayResult;
     } else {
         lowerTxt.textContent = "";
-        lowerTxt.classList.remove("instant-result", "final-result");
     }
 }
 
