@@ -15,7 +15,7 @@ const operations = {
     "/": divide,
 };
 
-const opDisplay = {
+const operationDisplay = {
     "+": "+",
     "-": "-",
     "*": "×",
@@ -42,6 +42,9 @@ const keyExceptions = {
     "Escape": "power",
 };
 
+const validActions =
+    "0 1 2 3 4 5 6 7 8 9 . + - * / = backspace clear-all power".split(" ");
+
 buttons.addEventListener("click", (e) => {
     const btn = e.target.closest("button");
     if (!btn) return;
@@ -53,8 +56,6 @@ window.addEventListener("keydown", (e) => {
     if (e.defaultPrevented) return;
 
     const value = keyExceptions[e.key] || e.key;
-    const validActions =
-        "0 1 2 3 4 5 6 7 8 9 . + - * / = backspace clear-all power".split(" ");
 
     if (!validActions.includes(value)) return;
 
@@ -66,7 +67,7 @@ function handleInput(value) {
     if (value === "power") {
         togglePower();
     } else {
-        calculate(value);
+        handleAction(value);
     }
 }
 
@@ -112,7 +113,8 @@ function renderPowerState() {
 function updateDisplay() {
     const displayOperand1 = addSeparators(state.operand1);
     const displayOperand2 = addSeparators(state.operand2);
-    const displayOperator = opDisplay[state.operator] || "";
+    const displayOperator = operationDisplay[state.operator] || "";
+    
     const displayResult = state.formattedResult
         ? addSeparators(state.formattedResult)
         : state.error;
@@ -137,7 +139,7 @@ function updateDisplay() {
     }
 }
 
-function calculate(value) {
+function handleAction(value) {
     if (state.isBooting || !state.isPowerOn) return;
 
     if (value === "clear-all") {
@@ -205,6 +207,7 @@ function setOperator(value) {
 
 function computeResult() {
     state.isSafeDivide = true;
+    state.error = "";
 
     if (!state.operator || !state.operand2) return;
 
@@ -252,6 +255,7 @@ function clearAll() {
     state.formattedResult = "";
     state.isSafeDivide = true;
     state.isFinal = false;
+    state.error = "";
 }
 
 function backspace() {
